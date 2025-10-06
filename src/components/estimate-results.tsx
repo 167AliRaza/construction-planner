@@ -199,7 +199,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                           className="rounded-md"
                         />
                       </div>
-                      <a href={result.metadata.URL_1} download className="w-full">
+                      <a href={result.metadata.URL_1} download={`design_image_${resultIndex + 1}_1.webp`} className="w-full">
                         <Button variant="outline" className="w-full">
                           <Download className="mr-2 h-4 w-4" /> Download Image 1
                         </Button>
@@ -217,7 +217,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                           className="rounded-md"
                         />
                       </div>
-                      <a href={result.metadata.URL_2} download className="w-full">
+                      <a href={result.metadata.URL_2} download={`design_image_${resultIndex + 1}_2.webp`} className="w-full">
                         <Button variant="outline" className="w-full">
                           <Download className="mr-2 h-4 w-4" /> Download Image 2
                         </Button>
