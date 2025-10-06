@@ -195,7 +195,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                         <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
                           <Image
                             src={result.metadata.URL_1}
-                            alt={`Design Image 1 for ${design.name}`}
+                            alt={result.content} // Changed alt text to use result.content
                             layout="fill"
                             objectFit="cover"
                             className="rounded-md"
@@ -213,7 +213,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                         <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
                           <Image
                             src={result.metadata.URL_2}
-                            alt={`Design Image 2 for ${design.name}`}
+                            alt={result.content} // Changed alt text to use result.content
                             layout="fill"
                             objectFit="cover"
                             className="rounded-md"
