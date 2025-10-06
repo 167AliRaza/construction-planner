@@ -190,12 +190,12 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                 <div key={resultIndex} className="space-y-4">
                   {result.metadata.URL_1 && (
                     <div className="w-full flex flex-col items-center space-y-2">
-                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border"> {/* Increased height */}
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
                         <Image
                           src={result.metadata.URL_1}
                           alt={result.content}
                           layout="fill"
-                          objectFit="contain" {/* Changed to contain */}
+                          objectFit="contain"
                           className="rounded-md"
                         />
                       </div>
@@ -208,12 +208,12 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                   )}
                   {result.metadata.URL_2 && (
                     <div className="w-full flex flex-col items-center space-y-2">
-                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border"> {/* Increased height */}
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
                         <Image
                           src={result.metadata.URL_2}
                           alt={result.content}
                           layout="fill"
-                          objectFit="contain" {/* Changed to contain */}
+                          objectFit="contain"
                           className="rounded-md"
                         />
                       </div>
