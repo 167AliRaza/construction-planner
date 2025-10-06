@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from "next/image";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { downloadImage } from "@/lib/download-image"; // Import the new utility
 
 type Design = {
   name: string;
@@ -199,11 +200,13 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                           className="rounded-md"
                         />
                       </div>
-                      <a href={result.metadata.URL_1} download={`design_image_${resultIndex + 1}_1.webp`} className="w-full">
-                        <Button variant="outline" className="w-full">
-                          <Download className="mr-2 h-4 w-4" /> Download Image 1
-                        </Button>
-                      </a>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => downloadImage(result.metadata.URL_1, `design_image_${resultIndex + 1}_1.webp`)}
+                      >
+                        <Download className="mr-2 h-4 w-4" /> Download Image 1
+                      </Button>
                     </div>
                   )}
                   {result.metadata.URL_2 && (
@@ -217,11 +220,13 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                           className="rounded-md"
                         />
                       </div>
-                      <a href={result.metadata.URL_2} download={`design_image_${resultIndex + 1}_2.webp`} className="w-full">
-                        <Button variant="outline" className="w-full">
-                          <Download className="mr-2 h-4 w-4" /> Download Image 2
-                        </Button>
-                      </a>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => downloadImage(result.metadata.URL_2, `design_image_${resultIndex + 1}_2.webp`)}
+                      >
+                        <Download className="mr-2 h-4 w-4" /> Download Image 2
+                      </Button>
                     </div>
                   )}
                 </div>
