@@ -5,7 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from "next/image";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { downloadImage } from "@/lib/download-image"; // Import the new utility
+import { downloadImage } from "@/lib/download-image";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs components
 
 type Design = {
   name: string;
@@ -76,165 +77,180 @@ export function EstimateResults({ data }: EstimateResultsProps) {
     new Intl.NumberFormat("en-PK").format(value);
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-6 w-full max-w-4xl">
       <h2 className="text-3xl font-bold text-center mb-8">Construction Estimate Details</h2>
 
-      {/* Cost Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cost Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">Covered Area (sqft)</TableCell>
-                <TableCell>{formatNumber(cost.covered_sqft)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Grey Structure Cost</TableCell>
-                <TableCell>{formatCurrency(cost.grey_cost)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Finishing Cost</TableCell>
-                <TableCell>{formatCurrency(cost.finishing_cost)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Total Estimated Cost</TableCell>
-                <TableCell className="text-lg font-bold">{formatCurrency(cost.total_cost)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">City Factor</TableCell>
-                <TableCell>{cost.city_factor}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="cost" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
+          <TabsTrigger value="cost">Cost</TabsTrigger>
+          <TabsTrigger value="materials">Materials</TabsTrigger>
+          <TabsTrigger value="plan">Plan</TabsTrigger>
+          <TabsTrigger value="designs">Designs</TabsTrigger>
+          <TabsTrigger value="visuals">Visuals</TabsTrigger>
+        </TabsList>
 
-      {/* Materials Breakdown */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Materials Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Material</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Object.entries(materials).map(([key, value]) => (
-                <TableRow key={key}>
-                  <TableCell className="font-medium">{key}</TableCell>
-                  <TableCell className="text-right">
-                    {key === "Materials Cost (PKR)" ? formatCurrency(value as number) : formatNumber(value as number)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+        <TabsContent value="cost" className="mt-4">
+          <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>Cost Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">Covered Area (sqft)</TableCell>
+                    <TableCell>{formatNumber(cost.covered_sqft)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Grey Structure Cost</TableCell>
+                    <TableCell>{formatCurrency(cost.grey_cost)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Finishing Cost</TableCell>
+                    <TableCell>{formatCurrency(cost.finishing_cost)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Total Estimated Cost</TableCell>
+                    <TableCell className="text-lg font-bold">{formatCurrency(cost.total_cost)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">City Factor</TableCell>
+                    <TableCell>{cost.city_factor}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Plan Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Plan Details (Approx. Area in sqft)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.entries(plan).map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center border-b pb-2 last:border-b-0">
-                <span className="font-medium">{key}</span>
-                <span>{value}</span>
+        <TabsContent value="materials" className="mt-4">
+          <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>Materials Breakdown</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Material</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Object.entries(materials).map(([key, value]) => (
+                    <TableRow key={key}>
+                      <TableCell className="font-medium">{key}</TableCell>
+                      <TableCell className="text-right">
+                        {key === "Materials Cost (PKR)" ? formatCurrency(value as number) : formatNumber(value as number)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="plan" className="mt-4">
+          <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>Plan Details (Approx. Area in sqft)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(plan).map(([key, value]) => (
+                  <div key={key} className="flex justify-between items-center border-b pb-2 last:border-b-0">
+                    <span className="font-medium">{key}</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Design Concepts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Design Concepts</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {designs.map((design, index) => (
-              <Card key={index} className="flex flex-col">
-                <CardHeader>
-                  <CardTitle className="text-lg">{design.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow space-y-2 text-sm text-muted-foreground">
-                  <p><strong>Summary:</strong> {design.summary}</p>
-                  <p><strong>Best For:</strong> {design.best_for}</p>
-                  <p><strong>Note:</strong> {design.note}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="designs" className="mt-4">
+          <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>Design Concepts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {designs.map((design, index) => (
+                  <Card key={index} className="flex flex-col">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{design.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow space-y-2 text-sm text-muted-foreground">
+                      <p><strong>Summary:</strong> {design.summary}</p>
+                      <p><strong>Best For:</strong> {design.best_for}</p>
+                      <p><strong>Note:</strong> {design.note}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Design Images */}
-      {retriever_results && retriever_results.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Design Visualizations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {retriever_results.map((result, resultIndex) => (
-                <div key={resultIndex} className="space-y-4">
-                  {result.metadata.URL_1 && (
-                    <div className="w-full flex flex-col items-center space-y-2">
-                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
-                        <Image
-                          src={result.metadata.URL_1}
-                          alt={result.content}
-                          layout="fill"
-                          objectFit="contain"
-                          className="rounded-md"
-                        />
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => downloadImage(result.metadata.URL_1, `design_image_${resultIndex + 1}_1.webp`)}
-                      >
-                        <Download className="mr-2 h-4 w-4" /> Download Image 1
-                      </Button>
+        <TabsContent value="visuals" className="mt-4">
+          {retriever_results && retriever_results.length > 0 && (
+            <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+              <CardHeader>
+                <CardTitle>Design Visualizations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {retriever_results.map((result, resultIndex) => (
+                    <div key={resultIndex} className="space-y-4">
+                      {result.metadata.URL_1 && (
+                        <div className="w-full flex flex-col items-center space-y-2">
+                          <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
+                            <Image
+                              src={result.metadata.URL_1}
+                              alt={result.content}
+                              layout="fill"
+                              objectFit="contain"
+                              className="rounded-md"
+                            />
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => downloadImage(result.metadata.URL_1, `design_image_${resultIndex + 1}_1.webp`)}
+                          >
+                            <Download className="mr-2 h-4 w-4" /> Download Image 1
+                          </Button>
+                        </div>
+                      )}
+                      {result.metadata.URL_2 && (
+                        <div className="w-full flex flex-col items-center space-y-2">
+                          <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
+                            <Image
+                              src={result.metadata.URL_2}
+                              alt={result.content}
+                              layout="fill"
+                              objectFit="contain"
+                              className="rounded-md"
+                            />
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => downloadImage(result.metadata.URL_2, `design_image_${resultIndex + 1}_2.webp`)}
+                          >
+                            <Download className="mr-2 h-4 w-4" /> Download Image 2
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {result.metadata.URL_2 && (
-                    <div className="w-full flex flex-col items-center space-y-2">
-                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
-                        <Image
-                          src={result.metadata.URL_2}
-                          alt={result.content}
-                          layout="fill"
-                          objectFit="contain"
-                          className="rounded-md"
-                        />
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => downloadImage(result.metadata.URL_2, `design_image_${resultIndex + 1}_2.webp`)}
-                      >
-                        <Download className="mr-2 h-4 w-4" /> Download Image 2
-                      </Button>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
