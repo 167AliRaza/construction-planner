@@ -188,14 +188,14 @@ export function EstimateResults({ data }: EstimateResultsProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {retriever_results.map((result, index) => (
                 <div key={index} className="space-y-4">
-                  <p className="text-sm text-muted-foreground">{result.content}</p>
+                  {/* Removed the line that displayed result.content */}
                   <div className="flex flex-col sm:flex-row gap-4">
                     {result.metadata.URL_1 && (
                       <div className="flex-1 flex flex-col items-center space-y-2">
                         <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
                           <Image
                             src={result.metadata.URL_1}
-                            alt={result.content} // Changed alt text to use result.content
+                            alt={result.content}
                             layout="fill"
                             objectFit="cover"
                             className="rounded-md"
@@ -213,7 +213,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                         <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
                           <Image
                             src={result.metadata.URL_2}
-                            alt={result.content} // Changed alt text to use result.content
+                            alt={result.content}
                             layout="fill"
                             objectFit="cover"
                             className="rounded-md"
