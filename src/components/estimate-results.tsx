@@ -185,17 +185,17 @@ export function EstimateResults({ data }: EstimateResultsProps) {
             <CardTitle>Design Visualizations</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6"> {/* Added space-y for spacing between individual image rows */}
+            <div className="space-y-6">
               {retriever_results.map((result, resultIndex) => (
-                <div key={resultIndex} className="space-y-4"> {/* Space between images from the same result object */}
+                <div key={resultIndex} className="space-y-4">
                   {result.metadata.URL_1 && (
-                    <div className="w-full flex flex-col items-center space-y-2"> {/* Full width container for image 1 */}
-                      <div className="relative w-full h-64 overflow-hidden rounded-md border"> {/* Increased height for full size */}
+                    <div className="w-full flex flex-col items-center space-y-2">
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border"> {/* Increased height */}
                         <Image
                           src={result.metadata.URL_1}
                           alt={result.content}
                           layout="fill"
-                          objectFit="cover"
+                          objectFit="contain" {/* Changed to contain */}
                           className="rounded-md"
                         />
                       </div>
@@ -207,13 +207,13 @@ export function EstimateResults({ data }: EstimateResultsProps) {
                     </div>
                   )}
                   {result.metadata.URL_2 && (
-                    <div className="w-full flex flex-col items-center space-y-2"> {/* Full width container for image 2 */}
-                      <div className="relative w-full h-64 overflow-hidden rounded-md border"> {/* Increased height for full size */}
+                    <div className="w-full flex flex-col items-center space-y-2">
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border"> {/* Increased height */}
                         <Image
                           src={result.metadata.URL_2}
                           alt={result.content}
                           layout="fill"
-                          objectFit="cover"
+                          objectFit="contain" {/* Changed to contain */}
                           className="rounded-md"
                         />
                       </div>
