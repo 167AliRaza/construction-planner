@@ -1,12 +1,70 @@
+"use client";
+
+import { useState } from "react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { ConstructionEstimateForm } from "@/components/construction-estimate-form";
+import { EstimateResults } from "@/components/estimate-results";
+import { Toaster } from "@/components/ui/sonner";
+
+type EstimateResultData = {
+  result: {
+    cost: {
+      covered_sqft: number;
+      grey_cost: number;
+      finishing_cost: number;
+      total_cost: number;
+      city_factor: number;
+    };
+    materials: {
+      "Bricks (units)": number;
+      "Cement (50kg bags)": number;
+      "Steel (kg)": number;
+      "Sand (cft)": number;
+      "Crush (cft)": number;
+      "Electrical wiring (m)": number;
+      "Plumbing PVC (m)": number;
+      "Paint (sqft)": number;
+      "Materials Cost (PKR)": number;
+    };
+    plan: {
+      Bedrooms: string;
+      "Lounge / Living": number;
+      Kitchen: number;
+      "Bathrooms (combined)": number;
+      "Circulation / Stairs": number;
+      "Store / Laundry": number;
+      "Wardrobes / Built-ins": number;
+    };
+    designs: {
+      name: string;
+      summary: string;
+      best_for: string;
+      note: string;
+    }[];
+  };
+  retriever_results: {
+    content: string;
+    metadata: {
+      URL_1: string;
+      URL_2: string;
+    };
+  }[];
+};
 
 export default function Home() {
+  const [estimateResult, setEstimateResult] = useState<EstimateResultData | null>(null);
+
   return (
-    <div className="grid grid-rows-[1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-1 items-center sm:items-start">
-        <h1>Blank page</h1>
+    <div className="flex flex-col items-center min-h-screen p-4 sm:p-8 font-[family-name:var(--font-geist-sans)] bg-background text-foreground">
+      <main className="w-full max-w-4xl flex flex-col gap-8 items-center">
+        {!estimateResult ? (
+          <ConstructionEstimateForm onEstimate={setEstimateResult} />
+        ) : (
+          <EstimateResults data={estimateResult} />
+        )}
       </main>
       <MadeWithDyad />
+      <Toaster />
     </div>
   );
 }
