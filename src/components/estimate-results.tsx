@@ -185,48 +185,45 @@ export function EstimateResults({ data }: EstimateResultsProps) {
             <CardTitle>Design Visualizations</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {retriever_results.map((result, index) => (
-                <div key={index} className="space-y-4">
-                  {/* Removed the line that displayed result.content */}
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {result.metadata.URL_1 && (
-                      <div className="flex-1 flex flex-col items-center space-y-2">
-                        <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
-                          <Image
-                            src={result.metadata.URL_1}
-                            alt={result.content}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-md"
-                          />
-                        </div>
-                        <a href={result.metadata.URL_1} download className="w-full">
-                          <Button variant="outline" className="w-full">
-                            <Download className="mr-2 h-4 w-4" /> Download Image 1
-                          </Button>
-                        </a>
+            <div className="space-y-6"> {/* Added space-y for spacing between individual image rows */}
+              {retriever_results.map((result, resultIndex) => (
+                <div key={resultIndex} className="space-y-4"> {/* Space between images from the same result object */}
+                  {result.metadata.URL_1 && (
+                    <div className="w-full flex flex-col items-center space-y-2"> {/* Full width container for image 1 */}
+                      <div className="relative w-full h-64 overflow-hidden rounded-md border"> {/* Increased height for full size */}
+                        <Image
+                          src={result.metadata.URL_1}
+                          alt={result.content}
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-md"
+                        />
                       </div>
-                    )}
-                    {result.metadata.URL_2 && (
-                      <div className="flex-1 flex flex-col items-center space-y-2">
-                        <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-md border">
-                          <Image
-                            src={result.metadata.URL_2}
-                            alt={result.content}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-md"
-                          />
-                        </div>
-                        <a href={result.metadata.URL_2} download className="w-full">
-                          <Button variant="outline" className="w-full">
-                            <Download className="mr-2 h-4 w-4" /> Download Image 2
-                          </Button>
-                        </a>
+                      <a href={result.metadata.URL_1} download className="w-full">
+                        <Button variant="outline" className="w-full">
+                          <Download className="mr-2 h-4 w-4" /> Download Image 1
+                        </Button>
+                      </a>
+                    </div>
+                  )}
+                  {result.metadata.URL_2 && (
+                    <div className="w-full flex flex-col items-center space-y-2"> {/* Full width container for image 2 */}
+                      <div className="relative w-full h-64 overflow-hidden rounded-md border"> {/* Increased height for full size */}
+                        <Image
+                          src={result.metadata.URL_2}
+                          alt={result.content}
+                          layout="fill"
+                          objectFit="cover"
+                          className="rounded-md"
+                        />
                       </div>
-                    )}
-                  </div>
+                      <a href={result.metadata.URL_2} download className="w-full">
+                        <Button variant="outline" className="w-full">
+                          <Download className="mr-2 h-4 w-4" /> Download Image 2
+                        </Button>
+                      </a>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
