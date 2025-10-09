@@ -153,7 +153,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Unit</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select unit" />
@@ -175,7 +176,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marla Standard</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select marla standard" />
@@ -197,7 +199,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quality</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select quality" />
@@ -220,7 +223,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>City</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select city" />
