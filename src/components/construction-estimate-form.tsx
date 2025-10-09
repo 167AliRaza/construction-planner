@@ -122,10 +122,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-2xl max-h-[calc(100vh-100px)] overflow-y-auto">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-4xl max-h-[calc(100vh-100px)] overflow-y-auto">
         <h2 className="text-2xl font-semibold text-center mb-6">Construction Estimate Planner</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Changed to lg:grid-cols-3 */}
           <FormField
             control={form.control}
             name="area_value"
