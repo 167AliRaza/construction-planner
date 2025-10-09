@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  area_value: z.string().min(1, { message: "Area value is required." }),
+  area_value: z.coerce.number().min(1, { message: "Area value must be at least 1." }), // Changed to number input
   unit: z.enum(["marla", "sqft"], { message: "Please select a valid unit." }),
   marla_standard: z.enum(["225 (Govt)", "272.25 (Lahore/old)"], {
     message: "Please select a valid marla standard.",
@@ -54,7 +54,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      area_value: "5",
+      area_value: 5, // Default value as a number
       unit: "marla",
       marla_standard: "225 (Govt)",
       quality: "standard",
@@ -67,7 +67,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     try {
       const payload = {
         ...values,
-        area_value: parseFloat(values.area_value), // Convert to number
+        // area_value is already a number due to z.coerce.number()
       };
 
       const response = await fetch(
@@ -97,8 +97,6 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     }
   }
 
-  const areaValueOptions = Array.from({ length: 20 }, (_, i) => (i + 1).toString()); // 1 to 20 for marla/sqft
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-2xl">
@@ -111,18 +109,16 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Area Value</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select area value" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {areaValueOptions.map((value) => (
-                      <SelectItem key={value} value={value}>{value}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter area value"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e.target.value === "" ? "" : Number(e.target.value));
+                    }}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
