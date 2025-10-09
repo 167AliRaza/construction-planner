@@ -42,13 +42,8 @@ type EstimateResultData = {
       note: string;
     }[];
   };
-  retriever_results: {
-    content: string;
-    metadata: {
-      URL_1: string;
-      URL_2: string;
-    };
-  }[];
+  image1?: string; // New image field
+  image2?: string; // New image field
 };
 
 export default function Home() {

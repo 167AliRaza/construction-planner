@@ -15,14 +15,6 @@ type Design = {
   note: string;
 };
 
-type RetrieverResult = {
-  content: string;
-  metadata: {
-    URL_1: string;
-    URL_2: string;
-  };
-};
-
 type EstimateResultData = {
   result: {
     cost: {
@@ -54,7 +46,8 @@ type EstimateResultData = {
     };
     designs: Design[];
   };
-  retriever_results: RetrieverResult[];
+  image1?: string; // New image field
+  image2?: string; // New image field
 };
 
 type EstimateResultsProps = {
@@ -63,7 +56,7 @@ type EstimateResultsProps = {
 
 export function EstimateResults({ data }: EstimateResultsProps) {
   const { cost, materials, plan, designs } = data.result;
-  const { retriever_results } = data;
+  const { image1, image2 } = data; // Destructure new image fields
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("en-PK", {
@@ -194,58 +187,60 @@ export function EstimateResults({ data }: EstimateResultsProps) {
         </TabsContent>
 
         <TabsContent value="visuals" className="mt-4">
-          {retriever_results && retriever_results.length > 0 && (
+          {(image1 || image2) ? (
             <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
               <CardHeader>
                 <CardTitle>Design Visualizations</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {retriever_results.map((result, resultIndex) => (
-                    <div key={resultIndex} className="space-y-4">
-                      {result.metadata.URL_1 && (
-                        <div className="w-full flex flex-col items-center space-y-2">
-                          <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
-                            <Image
-                              src={result.metadata.URL_1}
-                              alt={result.content}
-                              layout="fill"
-                              objectFit="contain"
-                              className="rounded-md"
-                            />
-                          </div>
-                          <Button
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => downloadImage(result.metadata.URL_1, `design_image_${resultIndex + 1}_1.webp`)}
-                          >
-                            <Download className="mr-2 h-4 w-4" /> Download Image 1
-                          </Button>
-                        </div>
-                      )}
-                      {result.metadata.URL_2 && (
-                        <div className="w-full flex flex-col items-center space-y-2">
-                          <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
-                            <Image
-                              src={result.metadata.URL_2}
-                              alt={result.content}
-                              layout="fill"
-                              objectFit="contain"
-                              className="rounded-md"
-                            />
-                          </div>
-                          <Button
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => downloadImage(result.metadata.URL_2, `design_image_${resultIndex + 1}_2.webp`)}
-                          >
-                            <Download className="mr-2 h-4 w-4" /> Download Image 2
-                          </Button>
-                        </div>
-                      )}
+                  {image1 && (
+                    <div className="w-full flex flex-col items-center space-y-2">
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
+                        <Image
+                          src={image1}
+                          alt="Design Image 1"
+                          layout="fill"
+                          objectFit="contain"
+                          className="rounded-md"
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => downloadImage(image1, `design_image_1.webp`)}
+                      >
+                        <Download className="mr-2 h-4 w-4" /> Download Image 1
+                      </Button>
                     </div>
-                  ))}
+                  )}
+                  {image2 && (
+                    <div className="w-full flex flex-col items-center space-y-2">
+                      <div className="relative w-full h-[400px] overflow-hidden rounded-md border">
+                        <Image
+                          src={image2}
+                          alt="Design Image 2"
+                          layout="fill"
+                          objectFit="contain"
+                          className="rounded-md"
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => downloadImage(image2, `design_image_2.webp`)}
+                      >
+                        <Download className="mr-2 h-4 w-4" /> Download Image 2
+                      </Button>
+                    </div>
+                  )}
                 </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
+              <CardContent className="p-6 text-center text-muted-foreground">
+                No visualizations available for this estimate.
               </CardContent>
             </Card>
           )}
