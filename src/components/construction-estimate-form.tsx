@@ -64,7 +64,7 @@ type EstimateFormProps = {
 export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.input<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       area_value: 5,
@@ -86,11 +86,12 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.input<typeof formSchema>) {
     setIsLoading(true);
     try {
+      const parsed = formSchema.parse(values);
       const payload = {
-        ...values,
+        ...parsed,
       };
 
       const response = await fetch(
