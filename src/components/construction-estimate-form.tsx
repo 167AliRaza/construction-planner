@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  area_value: z.coerce.number().min(1, { message: "Area value must be at least 1." }), // Changed to number input
+  area_value: z.coerce.number().min(1, { message: "Area value must be at least 1." }),
   unit: z.enum(["marla", "sqft"], { message: "Please select a valid unit." }),
   marla_standard: z.enum(["225 (Govt)", "272.25 (Lahore/old)"], {
     message: "Please select a valid marla standard.",
@@ -42,6 +42,19 @@ const formSchema = z.object({
     "Multan",
     "Other",
   ], { message: "Please select a valid city." }),
+  overall_length: z.string().min(1, { message: "Overall length is required." }),
+  overall_width: z.string().min(1, { message: "Overall width is required." }),
+  bedrooms: z.string().min(1, { message: "Bedroom details are required." }),
+  bathrooms: z.string().min(1, { message: "Bathroom details are required." }),
+  kitchen_size: z.string().min(1, { message: "Kitchen details are required." }),
+  living_rooms: z.string().min(1, { message: "Living room details are required." }),
+  drawing_dining: z.string().optional().default("not required"),
+  garage: z.string().optional().default("not required"),
+  floors: z.enum(["single story", "double story", "triple story"], {
+    message: "Please select the number of floors.",
+  }),
+  extra_features: z.string().optional().default("None"),
+  style: z.string().optional().default("Pakistani style"),
 });
 
 type EstimateFormProps = {
@@ -54,11 +67,22 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      area_value: 5, // Default value as a number
+      area_value: 5,
       unit: "marla",
       marla_standard: "225 (Govt)",
       quality: "standard",
       city: "Faisalabad",
+      overall_length: "50 ft",
+      overall_width: "15 ft",
+      bedrooms: "3 each size is 12x12 ft",
+      bathrooms: "2 each size is 5x8 ft",
+      kitchen_size: "open , 4x8 size",
+      living_rooms: "1 size is 12x15 ft",
+      drawing_dining: "not required",
+      garage: "not required",
+      floors: "single story",
+      extra_features: "None",
+      style: "Pakistani style",
     },
   });
 
@@ -67,7 +91,6 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     try {
       const payload = {
         ...values,
-        // area_value is already a number due to z.coerce.number()
       };
 
       const response = await fetch(
@@ -99,10 +122,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-2xl">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-2xl max-h-[calc(100vh-100px)] overflow-y-auto">
         <h2 className="text-2xl font-semibold text-center mb-6">Construction Estimate Planner</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Grid for form fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
             name="area_value"
@@ -213,6 +236,169 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="overall_length"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Overall Length (e.g., 50 ft)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 50 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="overall_width"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Overall Width (e.g., 15 ft)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 15 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="bedrooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bedrooms (e.g., 3 each size is 12x12 ft)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 3 each size is 12x12 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="bathrooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bathrooms (e.g., 2 each size is 5x8 ft)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 2 each size is 5x8 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="kitchen_size"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Kitchen (e.g., open, 4x8 size)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., open, 4x8 size" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="living_rooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Living Rooms (e.g., 1 size is 12x15 ft)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 1 size is 12x15 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="drawing_dining"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Drawing/Dining (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., not required or 1 size 10x10 ft" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="garage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Garage (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., not required or for 2 cars" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="floors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number of Floors</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of floors" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="single story">Single Story</SelectItem>
+                    <SelectItem value="double story">Double Story</SelectItem>
+                    <SelectItem value="triple story">Triple Story</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="extra_features"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Extra Features (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., None, small garden" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="style"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Style (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Pakistani style, Modern" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
