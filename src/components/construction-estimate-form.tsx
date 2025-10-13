@@ -45,15 +45,14 @@ const formSchema = z.object({
   overall_length: z.string().min(1, { message: "Overall length is required." }),
   overall_width: z.string().min(1, { message: "Overall width is required." }),
   bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(7, { message: "Bedrooms cannot exceed 7." }),
-  bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }).max(5, { message: "Bathrooms cannot exceed 5." }), // Changed min to 1
-  kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }), // Changed min to 1
+  bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }).max(5, { message: "Bathrooms cannot exceed 5." }),
+  kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }),
   living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
   drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }),
   garage: z.string().optional().default("not required"),
   floors: z.enum(["single story", "double story", "triple story"], {
     message: "Please select the number of floors.",
   }),
-  extra_features: z.string().optional().default("None"),
   style: z.string().optional().default("Pakistani style"),
 });
 
@@ -75,13 +74,12 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       overall_length: "50 ft",
       overall_width: "15 ft",
       bedrooms: 3,
-      bathrooms: 2, // Numeric default, now at least 1
-      kitchen_size: 1, // Numeric default, now at least 1
+      bathrooms: 2,
+      kitchen_size: 1,
       living_rooms: 1,
       drawing_dining: 0,
       garage: "not required",
       floors: "single story",
-      extra_features: "None",
       style: "Pakistani style",
     },
   });
@@ -428,20 +426,6 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     <SelectItem value="triple story">Triple Story</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="extra_features"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Extra Features (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., None, small garden" {...field} />
-                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
