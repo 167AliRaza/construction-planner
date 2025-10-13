@@ -70,8 +70,8 @@ export function EstimateResults({ data }: EstimateResultsProps) {
     new Intl.NumberFormat("en-PK").format(value);
 
   return (
-    <div className="space-y-8 p-6 w-full max-w-4xl">
-      <h2 className="text-3xl font-bold text-center mb-8">Construction Estimate Details</h2>
+    <div className="space-y-8 p-6 w-full">
+      {/* Removed the h2 title from here */}
 
       <Tabs defaultValue="cost" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">

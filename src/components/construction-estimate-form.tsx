@@ -125,8 +125,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full"> {/* Removed max-h-[calc(100vh-100px)] overflow-y-auto */}
-        <h2 className="text-2xl font-semibold text-center mb-6">Construction Estimate Planner</h2>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full">
+        {/* Removed the h2 title from here */}
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FormField
