@@ -58,13 +58,14 @@ export function EstimateResults({ data }: EstimateResultsProps) {
   const { cost, materials, plan, designs } = data.result;
   const { image1, image2 } = data; // Destructure new image fields
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-PK", {
-      style: "currency",
-      currency: "PKR",
+  const formatCurrency = (value: number) => {
+    // Use Indian numbering system (lakhs/crores)
+    const formatted = new Intl.NumberFormat("en-IN", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
+    return `Rs ${formatted}`;
+  };
 
   const formatNumber = (value: number) =>
     new Intl.NumberFormat("en-PK").format(value);
