@@ -50,8 +50,8 @@ export default function Home() {
   const [estimateResult, setEstimateResult] = useState<EstimateResultData | null>(null);
 
   return (
-    <div className="flex flex-col items-center h-screen p-4 sm:p-8 font-[family-name:var(--font-geist-sans)] bg-background text-foreground overflow-hidden">
-      <main className="w-full flex flex-col gap-8 items-center h-full justify-center"> {/* Removed max-w-4xl */}
+    <div className="flex flex-col items-center min-h-screen p-4 sm:p-8 font-[family-name:var(--font-geist-sans)] bg-background text-foreground"> {/* Changed h-screen overflow-hidden to min-h-screen */}
+      <main className="w-full flex flex-col gap-8 items-center h-full justify-center">
         {!estimateResult ? (
           <ConstructionEstimateForm onEstimate={setEstimateResult} />
         ) : (
