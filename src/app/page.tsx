@@ -53,7 +53,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen font-[family-name:var(--font-geist-sans)] bg-background text-foreground">
       <PageHeader /> {/* Add the fixed header here */}
-      <main className="w-full flex flex-col gap-8 items-center pt-20 p-4 sm:p-8 pb-4"> {/* Added pt-20 for header clearance and adjusted padding */}
+      <main className="w-full flex flex-col gap-8 items-center pt-20 p-4 sm:p-8 pb-4"> {/* Removed justify-center */}
         {!estimateResult ? (
           <ConstructionEstimateForm onEstimate={setEstimateResult} />
         ) : (

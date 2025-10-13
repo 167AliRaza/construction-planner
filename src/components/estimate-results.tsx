@@ -70,9 +70,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
     new Intl.NumberFormat("en-PK").format(value);
 
   return (
-    <div className="space-y-8 p-6 w-full">
-      {/* Removed the h2 title from here */}
-
+    <div className="space-y-8 p-6 w-full pt-20"> {/* Added pt-20 to clear the fixed header */}
       <Tabs defaultValue="cost" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
           <TabsTrigger value="cost">Cost</TabsTrigger>
