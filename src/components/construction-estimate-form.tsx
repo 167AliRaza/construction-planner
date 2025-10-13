@@ -91,7 +91,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     try {
       const payload = {
         ...values,
-        bedrooms: `${values.bedrooms} each size is 12x12 ft`, // Reconstruct string for API
+        bedrooms: String(values.bedrooms), // Send only the number as a string
       };
 
       const response = await fetch(
