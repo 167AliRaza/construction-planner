@@ -156,7 +156,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Unit</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select unit" />
@@ -178,7 +178,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marla Standard</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select marla standard" />
@@ -200,7 +200,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quality</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select quality" />
@@ -223,7 +223,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>City</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select city" />
@@ -233,7 +233,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     <SelectItem value="Lahore">Lahore</SelectItem>
                     <SelectItem value="Islamabad">Islamabad</SelectItem>
                     <SelectItem value="Rawalpindi">Rawalpindi</SelectItem>
-                    <SelectItem value="Karachi">Karla</SelectItem>
+                    <SelectItem value="Karachi">Karachi</SelectItem>
                     <SelectItem value="Faisalabad">Faisalabad</SelectItem>
                     <SelectItem value="Multan">Multan</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
@@ -414,7 +414,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Number of Floors</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select number of floors" />
