@@ -44,7 +44,7 @@ const formSchema = z.object({
   ], { message: "Please select a valid city." }),
   overall_length: z.string().min(1, { message: "Overall length is required." }),
   overall_width: z.string().min(1, { message: "Overall width is required." }),
-  bedrooms: z.string().min(1, { message: "Bedroom details are required." }),
+  bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(7, { message: "Bedrooms cannot exceed 7." }), // Changed to number for dropdown
   bathrooms: z.string().min(1, { message: "Bathroom details are required." }),
   kitchen_size: z.string().min(1, { message: "Kitchen details are required." }),
   living_rooms: z.string().min(1, { message: "Living room details are required." }),
@@ -64,7 +64,7 @@ type EstimateFormProps = {
 export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.input<typeof formSchema>>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       area_value: 5,
@@ -74,7 +74,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       city: "Faisalabad",
       overall_length: "50 ft",
       overall_width: "15 ft",
-      bedrooms: "3 each size is 12x12 ft",
+      bedrooms: 3, // Default value as a number
       bathrooms: "2 each size is 5x8 ft",
       kitchen_size: "open , 4x8 size",
       living_rooms: "1 size is 12x15 ft",
@@ -86,12 +86,12 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     },
   });
 
-  async function onSubmit(values: z.input<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const parsed = formSchema.parse(values);
       const payload = {
-        ...parsed,
+        ...values,
+        bedrooms: `${values.bedrooms} each size is 12x12 ft`, // Reconstruct string for API
       };
 
       const response = await fetch(
@@ -126,7 +126,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full max-w-4xl max-h-[calc(100vh-100px)] overflow-y-auto">
         <h2 className="text-2xl font-semibold text-center mb-6">Construction Estimate Planner</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Changed to lg:grid-cols-3 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FormField
             control={form.control}
             name="area_value"
@@ -154,8 +154,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Unit</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select unit" />
@@ -177,8 +176,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marla Standard</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select marla standard" />
@@ -200,8 +198,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quality</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select quality" />
@@ -224,8 +221,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>City</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select city" />
@@ -279,10 +275,21 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="bedrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bedrooms (e.g., 3 each size is 12x12 ft)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., 3 each size is 12x12 ft" {...field} />
-                </FormControl>
+                <FormLabel>Number of Bedrooms</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of bedrooms" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
