@@ -125,7 +125,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full mt-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full">
         {/* Removed the h2 title from here */}
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -233,7 +233,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     <SelectItem value="Lahore">Lahore</SelectItem>
                     <SelectItem value="Islamabad">Islamabad</SelectItem>
                     <SelectItem value="Rawalpindi">Rawalpindi</SelectItem>
-                    <SelectItem value="Karachi">Karachi</SelectItem>
+                    <SelectItem value="Karachi">Karla</SelectItem>
                     <SelectItem value="Faisalabad">Faisalabad</SelectItem>
                     <SelectItem value="Multan">Multan</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
