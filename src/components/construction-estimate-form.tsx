@@ -44,11 +44,11 @@ const formSchema = z.object({
   ], { message: "Please select a valid city." }),
   overall_length: z.string().min(1, { message: "Overall length is required." }),
   overall_width: z.string().min(1, { message: "Overall width is required." }),
-  bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(7, { message: "Bedrooms cannot exceed 7." }), // Changed to number for dropdown
-  bathrooms: z.string().min(1, { message: "Bathroom details are required." }),
-  kitchen_size: z.string().min(1, { message: "Kitchen details are required." }),
-  living_rooms: z.string().min(1, { message: "Living room details are required." }),
-  drawing_dining: z.string().optional().default("not required"),
+  bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(7, { message: "Bedrooms cannot exceed 7." }),
+  bathrooms: z.coerce.number().min(0, { message: "Bathrooms must be at least 0." }).max(5, { message: "Bathrooms cannot exceed 5." }), // Changed to number
+  kitchen_size: z.coerce.number().min(0, { message: "Kitchens must be at least 0." }).max(2, { message: "Kitchens cannot exceed 2." }), // Changed to number (representing count)
+  living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }), // Changed to number
+  drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }), // Changed to number (0 for not required, 1 for required)
   garage: z.string().optional().default("not required"),
   floors: z.enum(["single story", "double story", "triple story"], {
     message: "Please select the number of floors.",
@@ -74,11 +74,11 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       city: "Faisalabad",
       overall_length: "50 ft",
       overall_width: "15 ft",
-      bedrooms: 3, // Default value as a number
-      bathrooms: "2 each size is 5x8 ft",
-      kitchen_size: "open , 4x8 size",
-      living_rooms: "1 size is 12x15 ft",
-      drawing_dining: "not required",
+      bedrooms: 3,
+      bathrooms: 2, // Numeric default
+      kitchen_size: 1, // Numeric default
+      living_rooms: 1, // Numeric default
+      drawing_dining: 0, // Numeric default (0 for not required)
       garage: "not required",
       floors: "single story",
       extra_features: "None",
@@ -91,7 +91,11 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     try {
       const payload = {
         ...values,
-        bedrooms: String(values.bedrooms), // Send only the number as a string
+        bedrooms: String(values.bedrooms),
+        bathrooms: String(values.bathrooms), // Convert to string for API
+        kitchen_size: String(values.kitchen_size), // Convert to string for API
+        living_rooms: String(values.living_rooms), // Convert to string for API
+        drawing_dining: String(values.drawing_dining), // Convert to string for API
       };
 
       const response = await fetch(
@@ -300,10 +304,21 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="bathrooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bathrooms (e.g., 2 each size is 5x8 ft)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., 2 each size is 5x8 ft" {...field} />
-                </FormControl>
+                <FormLabel>Number of Bathrooms</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of bathrooms" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[0, 1, 2, 3, 4, 5].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -314,10 +329,21 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="kitchen_size"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Kitchen (e.g., open, 4x8 size)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., open, 4x8 size" {...field} />
-                </FormControl>
+                <FormLabel>Number of Kitchens</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of kitchens" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[0, 1, 2].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -328,10 +354,21 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="living_rooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Living Rooms (e.g., 1 size is 12x15 ft)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., 1 size is 12x15 ft" {...field} />
-                </FormControl>
+                <FormLabel>Number of Living Rooms</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of living rooms" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[0, 1, 2, 3].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -342,10 +379,18 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="drawing_dining"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Drawing/Dining (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., not required or 1 size 10x10 ft" {...field} />
-                </FormControl>
+                <FormLabel>Drawing/Dining</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="0">Not Required</SelectItem>
+                    <SelectItem value="1">Required</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
