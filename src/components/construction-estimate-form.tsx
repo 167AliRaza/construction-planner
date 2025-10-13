@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -49,11 +49,11 @@ const formSchema = z.object({
   kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }),
   living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
   drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }),
-  garage: z.string().optional().default("not required"),
+  garage: z.string().default("not required"),
   floors: z.enum(["single story", "double story", "triple story"], {
     message: "Please select the number of floors.",
   }),
-  style: z.string().optional().default("Pakistani style"),
+  style: z.string().default("Pakistani style"),
 });
 
 type EstimateFormProps = {
@@ -63,8 +63,10 @@ type EstimateFormProps = {
 export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const resolver = zodResolver(formSchema) as Resolver<z.infer<typeof formSchema>>;
+
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver,
     defaultValues: {
       area_value: 5,
       unit: "marla",
