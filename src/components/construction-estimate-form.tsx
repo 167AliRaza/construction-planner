@@ -45,10 +45,10 @@ const formSchema = z.object({
   overall_length: z.string().min(1, { message: "Overall length is required." }),
   overall_width: z.string().min(1, { message: "Overall width is required." }),
   bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(7, { message: "Bedrooms cannot exceed 7." }),
-  bathrooms: z.coerce.number().min(0, { message: "Bathrooms must be at least 0." }).max(5, { message: "Bathrooms cannot exceed 5." }), // Changed to number
-  kitchen_size: z.coerce.number().min(0, { message: "Kitchens must be at least 0." }).max(2, { message: "Kitchens cannot exceed 2." }), // Changed to number (representing count)
-  living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }), // Changed to number
-  drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }), // Changed to number (0 for not required, 1 for required)
+  bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }).max(5, { message: "Bathrooms cannot exceed 5." }), // Changed min to 1
+  kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }), // Changed min to 1
+  living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
+  drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }),
   garage: z.string().optional().default("not required"),
   floors: z.enum(["single story", "double story", "triple story"], {
     message: "Please select the number of floors.",
@@ -75,10 +75,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       overall_length: "50 ft",
       overall_width: "15 ft",
       bedrooms: 3,
-      bathrooms: 2, // Numeric default
-      kitchen_size: 1, // Numeric default
-      living_rooms: 1, // Numeric default
-      drawing_dining: 0, // Numeric default (0 for not required)
+      bathrooms: 2, // Numeric default, now at least 1
+      kitchen_size: 1, // Numeric default, now at least 1
+      living_rooms: 1,
+      drawing_dining: 0,
       garage: "not required",
       floors: "single story",
       extra_features: "None",
@@ -92,10 +92,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       const payload = {
         ...values,
         bedrooms: String(values.bedrooms),
-        bathrooms: String(values.bathrooms), // Convert to string for API
-        kitchen_size: String(values.kitchen_size), // Convert to string for API
-        living_rooms: String(values.living_rooms), // Convert to string for API
-        drawing_dining: String(values.drawing_dining), // Convert to string for API
+        bathrooms: String(values.bathrooms),
+        kitchen_size: String(values.kitchen_size),
+        living_rooms: String(values.living_rooms),
+        drawing_dining: String(values.drawing_dining),
       };
 
       const response = await fetch(
@@ -312,7 +312,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {[0, 1, 2, 3, 4, 5].map((num) => (
+                    {[1, 2, 3, 4, 5].map((num) => (
                       <SelectItem key={num} value={String(num)}>
                         {num}
                       </SelectItem>
@@ -337,7 +337,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {[0, 1, 2].map((num) => (
+                    {[1, 2].map((num) => (
                       <SelectItem key={num} value={String(num)}>
                         {num}
                       </SelectItem>
