@@ -50,9 +50,10 @@ const formSchema = z.object({
   living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
   drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }),
   garage: z.string().default("not required"),
-  floors: z.enum(["single story", "double story", "triple story"], {
-    message: "Please select the number of floors.",
-  }),
+  floors: z.coerce
+    .number()
+    .min(1, { message: "Floors must be at least 1." })
+    .max(3, { message: "Floors cannot exceed 3." }),
   style: z.string().default("Pakistani style"),
 });
 
@@ -81,7 +82,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       living_rooms: 1,
       drawing_dining: 0,
       garage: "not required",
-      floors: "single story",
+      floors: 1,
       style: "Pakistani style",
     },
   });
@@ -432,16 +433,18 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Number of Floors</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value as string}>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select number of floors" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="1">Single Story</SelectItem>
-                    <SelectItem value="2">Double Story</SelectItem>
-                    <SelectItem value="3">Triple Story</SelectItem>
+                    {[1, 2, 3].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
