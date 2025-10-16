@@ -129,7 +129,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-lg shadow-sm bg-card w-full">
         {/* Removed the h2 title from here */}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FormField
             control={form.control}
@@ -251,9 +251,14 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="overall_length"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Overall Length (e.g., 50 ft)</FormLabel>
+                <FormLabel>Overall Length (e.g., 50 )</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., 50 ft" {...field} />
+                  <Input placeholder="in feets" {...field} type="number" min={1}
+                    onKeyDown={(e) => {
+                      if (['e', 'E', '+', '-'].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -265,9 +270,19 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             name="overall_width"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Overall Width (e.g., 15 ft)</FormLabel>
+                <FormLabel>Overall Width (e.g., 15 )</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., 15 ft" {...field} />
+                  <Input
+                    placeholder="in feets"
+                    {...field}
+                    type="number"
+                    min={1}
+                    onKeyDown={(e) => {
+                      if (['e', 'E', '+', '-'].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

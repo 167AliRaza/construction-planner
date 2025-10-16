@@ -72,16 +72,16 @@ export function EstimateResults({ data }: EstimateResultsProps) {
 
   return (
     <div className="space-y-8 p-6 w-full"> {/* Removed pt-20 */}
-      <Tabs defaultValue="cost" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
-          <TabsTrigger value="cost">Cost</TabsTrigger>
+      <Tabs defaultValue="materials" className="w-full">
+        <TabsList className="grid w-full  h-auto">
+          {/* <TabsTrigger value="cost">Cost</TabsTrigger> */}
           <TabsTrigger value="materials">Materials</TabsTrigger>
-          <TabsTrigger value="plan">Plan</TabsTrigger>
-          <TabsTrigger value="designs">Designs</TabsTrigger>
-          <TabsTrigger value="visuals">Visuals</TabsTrigger>
+          {/* <TabsTrigger value="plan">Plan</TabsTrigger> */}
+          {/* <TabsTrigger value="designs">Designs</TabsTrigger> */}
+          {/* <TabsTrigger value="visuals">Visuals</TabsTrigger> */}
         </TabsList>
 
-        <TabsContent value="cost" className="mt-4">
+        {/* <TabsContent value="cost" className="mt-4">
           <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
             <CardHeader>
               <CardTitle>Cost Summary</CardTitle>
@@ -113,7 +113,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
               </Table>
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="materials" className="mt-4">
           <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
@@ -143,7 +143,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="plan" className="mt-4">
+        {/* <TabsContent value="plan" className="mt-4">
           <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
             <CardHeader>
               <CardTitle>Plan Details (Approx. Area in sqft)</CardTitle>
@@ -159,9 +159,9 @@ export function EstimateResults({ data }: EstimateResultsProps) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
-        <TabsContent value="designs" className="mt-4">
+        {/* <TabsContent value="designs" className="mt-4">
           <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
             <CardHeader>
               <CardTitle>Design Concepts</CardTitle>
@@ -183,9 +183,9 @@ export function EstimateResults({ data }: EstimateResultsProps) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
-        <TabsContent value="visuals" className="mt-4">
+        {/* <TabsContent value="visuals" className="mt-4">
           {(image1 || image2) ? (
             <Card className="max-h-[calc(100vh-250px)] overflow-y-auto">
               <CardHeader>
@@ -243,7 +243,7 @@ export function EstimateResults({ data }: EstimateResultsProps) {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   );
