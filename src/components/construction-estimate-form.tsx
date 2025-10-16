@@ -257,8 +257,9 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     onKeyDown={(e) => {
                       if (['e', 'E', '+', '-'].includes(e.key)) {
                         e.preventDefault();
+                        
                       }
-                    }} />
+                    }}required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -281,7 +282,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                       if (['e', 'E', '+', '-'].includes(e.key)) {
                         e.preventDefault();
                       }
-                    }}
+                    }}required
                   />
                 </FormControl>
                 <FormMessage />
