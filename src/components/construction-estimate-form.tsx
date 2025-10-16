@@ -439,9 +439,9 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="single story">Single Story</SelectItem>
-                    <SelectItem value="double story">Double Story</SelectItem>
-                    <SelectItem value="triple story">Triple Story</SelectItem>
+                    <SelectItem value="1">Single Story</SelectItem>
+                    <SelectItem value="2">Double Story</SelectItem>
+                    <SelectItem value="3">Triple Story</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
