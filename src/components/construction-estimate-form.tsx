@@ -160,9 +160,29 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                       form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
                       form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
 
-                      // Update garage based on area (<=3 => Not Included)
-                      const garageValue = areaForCalculation <= 3 ? "Not Included" : "Required";
-                      form.setValue("garage", garageValue, { shouldDirty: true, shouldValidate: true });
+                      // Enforce garage always Required
+                      form.setValue("garage", "Required", { shouldDirty: true, shouldValidate: true });
+
+                      // living rooms: 0 when area <= 3, else 1
+                      const livingRooms = areaForCalculation <= 3 ? 0 : 1;
+                      form.setValue("living_rooms", livingRooms, { shouldDirty: true, shouldValidate: true });
+
+                      // Prefill overall width/length based on marla presets while keeping inputs editable
+                      const marlaDimensions: Record<number, { width: string; length: string }> = {
+                        3: { width: "18", length: "37.5" },
+                        4: { width: "25", length: "36" },
+                        5: { width: "25", length: "45" },
+                        6: { width: "30", length: "45" },
+                        7: { width: "35", length: "45" },
+                        8: { width: "30", length: "60" },
+                        9: { width: "35", length: "58" },
+                        10: { width: "35", length: "65" },
+                      };
+                      if (Number.isInteger(areaForCalculation) && marlaDimensions[areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
+                        const preset = marlaDimensions[areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
+                        form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
+                        form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
+                      }
                     }}
                     onBlur={(e) => {
                       const valueString = e.target.value;
@@ -171,7 +191,11 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         const derivedRooms = Math.max(1, Math.floor(3 * 0.5));
                         form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
                         form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
-                        form.setValue("garage", "Not Included", { shouldDirty: true, shouldValidate: true });
+                        form.setValue("garage", "Required", { shouldDirty: true, shouldValidate: true });
+                        form.setValue("living_rooms", 0, { shouldDirty: true, shouldValidate: true });
+                        // Apply 3 marla default dimensions on empty -> 3
+                        form.setValue("overall_width", "18", { shouldDirty: true, shouldValidate: true });
+                        form.setValue("overall_length", "37.5", { shouldDirty: true, shouldValidate: true });
                       }
                     }}
                     onKeyDown={(e) => {
