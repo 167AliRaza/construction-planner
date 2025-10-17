@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  area_value: z.coerce.number().min(1, { message: "Area value must be at least 1." }),
+  area_value: z.coerce.number().min(3, { message: "Area value must be at least 3." }),
   unit: z.enum(["marla", "sqft"], { message: "Please select a valid unit." }),
   marla_standard: z.enum(["225 (Govt)", "272.25 (Lahore/old)"], {
     message: "Please select a valid marla standard.",
@@ -74,10 +74,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       marla_standard: "225 (Govt)",
       quality: "standard",
       city: "Faisalabad",
-      overall_length: "50 ft",
-      overall_width: "15 ft",
-      bedrooms: 3,
-      bathrooms: 3,
+      overall_length: "50",
+      overall_width: "15",
+      bedrooms: 2,
+      bathrooms: 2,
       kitchen_size: 1,
       living_rooms: 1,
       drawing_dining: 0,
@@ -141,7 +141,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                 <FormControl>
                   <Input
                     type="number"
-                    min={1}
+                    min={3}
                     placeholder="Enter area value"
                     {...field}
                     onChange={(e) => {
@@ -150,23 +150,28 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         field.onChange("");
                       } else {
                         const numericValue = Number(valueString);
-                        const clampedValue = numericValue < 1 ? 1 : numericValue;
+                        const clampedValue = numericValue < 3 ? 3 : numericValue;
                         field.onChange(clampedValue);
                       }
 
                       // Derive bedrooms and bathrooms in real-time
-                      const areaForCalculation = valueString === "" ? 1 : Math.max(1, Number(valueString));
-                      const derivedRooms = Math.max(1, Math.floor(areaForCalculation * 0.6));
+                      const areaForCalculation = valueString === "" ? 3 : Math.max(3, Number(valueString));
+                      const derivedRooms = Math.max(1, Math.floor(areaForCalculation * 0.5));
                       form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
                       form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
+
+                      // Update garage based on area (<=3 => Not Included)
+                      const garageValue = areaForCalculation <= 3 ? "Not Included" : "Required";
+                      form.setValue("garage", garageValue, { shouldDirty: true, shouldValidate: true });
                     }}
                     onBlur={(e) => {
                       const valueString = e.target.value;
                       if (valueString === "") {
-                        field.onChange(1);
-                        const derivedRooms = Math.max(1, Math.floor(1 * 0.6));
+                        field.onChange(3);
+                        const derivedRooms = Math.max(1, Math.floor(3 * 0.5));
                         form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
                         form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
+                        form.setValue("garage", "Not Included", { shouldDirty: true, shouldValidate: true });
                       }
                     }}
                     onKeyDown={(e) => {
