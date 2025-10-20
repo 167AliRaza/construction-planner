@@ -48,7 +48,7 @@ const formSchema = z.object({
   bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }),
   kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }),
   living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
-  drawing_dining: z.coerce.number().min(0, { message: "Drawing/Dining must be 0 or 1." }).max(1, { message: "Drawing/Dining can be 0 or 1." }),
+  drawing_dining: z.string().default("Required"),
   garage: z.string().default("Required"),
   floors: z.coerce
     .number()
@@ -80,7 +80,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       bathrooms: 2,
       kitchen_size: 1,
       living_rooms: 1,
-      drawing_dining: 0,
+      drawing_dining: "Required",
       garage: "Required",
       floors: 1,
       style: "Pakistai style",
@@ -96,7 +96,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
         bathrooms: String(values.bathrooms),
         kitchen_size: String(values.kitchen_size),
         living_rooms: String(values.living_rooms),
-        drawing_dining: String(values.drawing_dining),
+        drawing_dining: values.drawing_dining,
       };
 
       const response = await fetch(
@@ -169,7 +169,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
                       // Prefill overall width/length based on marla presets while keeping inputs editable
                       const marlaDimensions: Record<number, { width: string; length: string }> = {
-                        3: { width: "18", length: "37.5" },
+                        3: { width: "18", length: "37" },
                         4: { width: "25", length: "36" },
                         5: { width: "25", length: "45" },
                         6: { width: "30", length: "45" },
@@ -246,7 +246,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="225 (Govt)">225 (Govt)</SelectItem>
-                    <SelectItem value="272.25 (Lahore/old)">272.25 (Lahore/old)</SelectItem>
+                    {/* <SelectItem value="272.25 (Lahore/old)">272.25 (Lahore/old)</SelectItem> */}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -355,7 +355,33 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
               <FormItem>
                 <FormLabel>Number of Bedrooms</FormLabel>
                 <FormControl>
-                  <Input type="number" value={String(field.value)} readOnly />
+                  <Input 
+                    type="number" 
+                    min={1}
+                    placeholder="Enter number of bedrooms"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        field.onChange("");
+                      } else {
+                        const numericValue = Number(value);
+                        const clampedValue = numericValue < 1 ? 1 : numericValue;
+                        field.onChange(clampedValue);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        field.onChange(1);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -366,11 +392,36 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             control={form.control}
             name="bathrooms"
             render={({ field }) => (
-
               <FormItem>
                 <FormLabel>Number of Bathrooms</FormLabel>
                 <FormControl>
-                  <Input type="number" value={String(field.value)} readOnly />
+                  <Input 
+                    type="number" 
+                    min={1}
+                    placeholder="Enter number of bathrooms"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        field.onChange("");
+                      } else {
+                        const numericValue = Number(value);
+                        const clampedValue = numericValue < 1 ? 1 : numericValue;
+                        field.onChange(clampedValue);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        field.onChange(1);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -433,17 +484,9 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Drawing/Dining</FormLabel>
-                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select option" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {/* <SelectItem value="0">Not Required</SelectItem> */}
-                    <SelectItem value="1">Required</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Input placeholder="Required" {...field} readOnly />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
