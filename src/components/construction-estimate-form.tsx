@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  area_value: z.coerce.number().min(3, { message: "Area value must be at least 3." }),
+  area_value: z.coerce.number().min(3, { message: "Area value must be at least 3." }).max(10, { message: "Area value cannot exceed 10." }),
   unit: z.enum(["marla", "sqft"], { message: "Please select a valid unit." }),
   marla_standard: z.enum(["225 (Govt)", "272.25 (Lahore/old)"], {
     message: "Please select a valid marla standard.",
@@ -44,8 +44,8 @@ const formSchema = z.object({
   ], { message: "Please select a valid city." }),
   overall_length: z.string().min(1, { message: "Overall length is required." }),
   overall_width: z.string().min(1, { message: "Overall width is required." }),
-  bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }),
-  bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }),
+  bedrooms: z.coerce.number().min(1, { message: "Bedrooms must be at least 1." }).max(3, { message: "Bedrooms cannot exceed 3." }),
+  bathrooms: z.coerce.number().min(1, { message: "Bathrooms must be at least 1." }).max(3, { message: "Bathrooms cannot exceed 3." }),
   kitchen_size: z.coerce.number().min(1, { message: "Kitchens must be at least 1." }).max(2, { message: "Kitchens cannot exceed 2." }),
   living_rooms: z.coerce.number().min(0, { message: "Living rooms must be at least 0." }).max(3, { message: "Living rooms cannot exceed 3." }),
   drawing_dining: z.string().default("Required"),
@@ -142,6 +142,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                   <Input
                     type="number"
                     min={3}
+                    max={10}
                     placeholder="Enter area value"
                     {...field}
                     onChange={(e) => {
@@ -150,13 +151,23 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         field.onChange("");
                       } else {
                         const numericValue = Number(valueString);
-                        const clampedValue = numericValue < 3 ? 3 : numericValue;
+                        const clampedValue = numericValue < 3 ? 3 : numericValue > 10 ? 10 : numericValue;
                         field.onChange(clampedValue);
                       }
 
-                      // Derive bedrooms and bathrooms in real-time
-                      const areaForCalculation = valueString === "" ? 3 : Math.max(3, Number(valueString));
-                      const derivedRooms = Math.max(1, Math.floor(areaForCalculation * 0.5));
+                      // Derive bedrooms and bathrooms based on new rules
+                      const areaForCalculation = valueString === "" ? 3 : Math.max(3, Math.min(10, Number(valueString)));
+                      let derivedRooms;
+                      if (areaForCalculation < 3) {
+                        derivedRooms = 1;
+                      } else if (areaForCalculation >= 4 && areaForCalculation <= 7) {
+                        derivedRooms = 2;
+                      } else if (areaForCalculation >= 8 && areaForCalculation <= 10) {
+                        derivedRooms = 3;
+                      } else {
+                        derivedRooms = 1; // fallback for area 3
+                      }
+                      
                       form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
                       form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
 
@@ -188,14 +199,13 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                       const valueString = e.target.value;
                       if (valueString === "") {
                         field.onChange(3);
-                        const derivedRooms = Math.max(1, Math.floor(3 * 0.5));
-                        form.setValue("bedrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
-                        form.setValue("bathrooms", derivedRooms, { shouldDirty: true, shouldValidate: true });
+                        form.setValue("bedrooms", 1, { shouldDirty: true, shouldValidate: true });
+                        form.setValue("bathrooms", 1, { shouldDirty: true, shouldValidate: true });
                         form.setValue("garage", "Required", { shouldDirty: true, shouldValidate: true });
                         form.setValue("living_rooms", 0, { shouldDirty: true, shouldValidate: true });
                         // Apply 3 marla default dimensions on empty -> 3
                         form.setValue("overall_width", "18", { shouldDirty: true, shouldValidate: true });
-                        form.setValue("overall_length", "37.5", { shouldDirty: true, shouldValidate: true });
+                        form.setValue("overall_length", "37", { shouldDirty: true, shouldValidate: true });
                       }
                     }}
                     onKeyDown={(e) => {
@@ -385,6 +395,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                   <Input
                     type="number"
                     min={1}
+                    max={3}
                     placeholder="Enter number of bedrooms"
                     {...field}
                     onChange={(e) => {
@@ -393,7 +404,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         field.onChange("");
                       } else {
                         const numericValue = Number(value);
-                        const clampedValue = numericValue < 1 ? 1 : numericValue;
+                        const clampedValue = numericValue < 1 ? 1 : numericValue > 3 ? 3 : numericValue;
                         field.onChange(clampedValue);
                       }
                     }}
@@ -425,6 +436,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                   <Input
                     type="number"
                     min={1}
+                    max={3}
                     placeholder="Enter number of bathrooms"
                     {...field}
                     onChange={(e) => {
@@ -433,7 +445,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         field.onChange("");
                       } else {
                         const numericValue = Number(value);
-                        const clampedValue = numericValue < 1 ? 1 : numericValue;
+                        const clampedValue = numericValue < 1 ? 1 : numericValue > 3 ? 3 : numericValue;
                         field.onChange(clampedValue);
                       }
                     }}
