@@ -74,8 +74,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       marla_standard: "225 (Govt)",
       quality: "standard",
       city: "Faisalabad",
-      overall_length: "45",
-      overall_width: "25",
+      overall_length: "45.0",
+      overall_width: "25.0",
       bedrooms: 2,
       bathrooms: 2,
       kitchen_size: 1,
@@ -179,18 +179,32 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                       form.setValue("living_rooms", livingRooms, { shouldDirty: true, shouldValidate: true });
 
                       // Prefill overall width/length based on marla presets while keeping inputs editable
-                      const marlaDimensions: Record<number, { width: string; length: string }> = {
-                        3: { width: "18", length: "37" },
-                        4: { width: "25", length: "36" },
-                        5: { width: "25", length: "45" },
-                        6: { width: "30", length: "45" },
-                        7: { width: "35", length: "45" },
-                        8: { width: "30", length: "60" },
-                        9: { width: "35", length: "58" },
-                        10: { width: "35", length: "65" },
+                      const currentMarlaStandard = form.getValues("marla_standard");
+                      const marlaDimensions: Record<string, Record<number, { width: string; length: string }>> = {
+                        "225 (Govt)": {
+                          3: { width: "18", length: "37" },
+                          4: { width: "25", length: "36" },
+                          5: { width: "25", length: "45" },
+                          6: { width: "30", length: "45" },
+                          7: { width: "35", length: "45" },
+                          8: { width: "30", length: "60" },
+                          9: { width: "35", length: "58" },
+                          10: { width: "35", length: "65" },
+                        },
+                        "272.25 (Lahore/old)": {
+                          3: { width: "20", length: "40.8" },
+                          4: { width: "25", length: "43.6" },
+                          5: { width: "25", length: "54.5" },
+                          6: { width: "30", length: "54.5" },
+                          7: { width: "30", length: "63.5" },
+                          8: { width: "35", length: "62.2" },
+                          9: { width: "35", length: "70" },
+                          10: { width: "35", length: "77.8" },
+                        },
                       };
-                      if (Number.isInteger(areaForCalculation) && marlaDimensions[areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
-                        const preset = marlaDimensions[areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
+                      
+                      if (Number.isInteger(areaForCalculation) && marlaDimensions[currentMarlaStandard]?.[areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
+                        const preset = marlaDimensions[currentMarlaStandard][areaForCalculation as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
                         form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
                         form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
                       }
@@ -203,9 +217,16 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         form.setValue("bathrooms", 1, { shouldDirty: true, shouldValidate: true });
                         form.setValue("garage", "Required", { shouldDirty: true, shouldValidate: true });
                         form.setValue("living_rooms", 0, { shouldDirty: true, shouldValidate: true });
-                        // Apply 3 marla default dimensions on empty -> 3
-                        form.setValue("overall_width", "18", { shouldDirty: true, shouldValidate: true });
-                        form.setValue("overall_length", "37", { shouldDirty: true, shouldValidate: true });
+                        
+                        // Apply 3 marla default dimensions based on current marla standard
+                        const currentMarlaStandard = form.getValues("marla_standard");
+                        const defaultDimensions = {
+                          "225 (Govt)": { width: "18", length: "37" },
+                          "272.25 (Lahore/old)": { width: "20", length: "40.8" },
+                        };
+                        const preset = defaultDimensions[currentMarlaStandard] || defaultDimensions["225 (Govt)"];
+                        form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
+                        form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
                       }
                     }}
                     onKeyDown={(e) => {
@@ -248,7 +269,40 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marla Standard</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value as string}>
+                <Select onValueChange={(value) => {
+                  field.onChange(value);
+                  
+                  // Update dimensions when marla standard changes
+                  const currentArea = form.getValues("area_value");
+                  const marlaDimensions: Record<string, Record<number, { width: string; length: string }>> = {
+                    "225 (Govt)": {
+                      3: { width: "18", length: "37" },
+                      4: { width: "25", length: "36" },
+                      5: { width: "25", length: "45" },
+                      6: { width: "30", length: "45" },
+                      7: { width: "35", length: "45" },
+                      8: { width: "30", length: "60" },
+                      9: { width: "35", length: "58" },
+                      10: { width: "35", length: "65" },
+                    },
+                    "272.25 (Lahore/old)": {
+                      3: { width: "20", length: "40.8" },
+                      4: { width: "25", length: "43.6" },
+                      5: { width: "25", length: "54.5" },
+                      6: { width: "30", length: "54.5" },
+                      7: { width: "30", length: "63.5" },
+                      8: { width: "35", length: "62.2" },
+                      9: { width: "35", length: "70" },
+                      10: { width: "35", length: "77.8" },
+                    },
+                  };
+                  
+                  if (Number.isInteger(currentArea) && marlaDimensions[value]?.[currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
+                    const preset = marlaDimensions[value][currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
+                    form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
+                    form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
+                  }
+                }} value={field.value as string}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select marla standard" />
@@ -271,11 +325,10 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
               <FormItem>
                 <FormLabel>Overall Length (e.g., 50 )</FormLabel>
                 <FormControl>
-                  <Input placeholder="in feets" {...field} type="number" min={1}
+                  <Input placeholder="in feets" {...field} type="number" min={0.1} step="0.1"
                     onKeyDown={(e) => {
                       if (['e', 'E', '+', '-'].includes(e.key)) {
                         e.preventDefault();
-
                       }
                     }} required />
                 </FormControl>
@@ -295,7 +348,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                     placeholder="in feets"
                     {...field}
                     type="number"
-                    min={1}
+                    min={0.1}
+                    step="0.1"
                     onKeyDown={(e) => {
                       if (['e', 'E', '+', '-'].includes(e.key)) {
                         e.preventDefault();
