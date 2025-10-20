@@ -246,7 +246,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="225 (Govt)">225 (Govt)</SelectItem>
-                    {/* <SelectItem value="272.25 (Lahore/old)">272.25 (Lahore/old)</SelectItem> */}
+                    <SelectItem value="272.25 (Lahore/old)">272.25 (Lahore/old)</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -256,22 +256,43 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
           <FormField
             control={form.control}
-            name="quality"
+            name="overall_length"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quality</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value as string}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select quality" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {/* <SelectItem value="economy">Economy</SelectItem> */}
-                    <SelectItem value="standard">Standard</SelectItem>
-                    {/* <SelectItem value="premium">Premium</SelectItem> */}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Overall Length (e.g., 50 )</FormLabel>
+                <FormControl>
+                  <Input placeholder="in feets" {...field} type="number" min={1}
+                    onKeyDown={(e) => {
+                      if (['e', 'E', '+', '-'].includes(e.key)) {
+                        e.preventDefault();
+
+                      }
+                    }} required />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="overall_width"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Overall Width (e.g., 15 )</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="in feets"
+                    {...field}
+                    type="number"
+                    min={1}
+                    onKeyDown={(e) => {
+                      if (['e', 'E', '+', '-'].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }} required
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -304,21 +325,25 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             )}
           />
 
+
           <FormField
             control={form.control}
-            name="overall_length"
+            name="quality"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Overall Length (e.g., 50 )</FormLabel>
-                <FormControl>
-                  <Input placeholder="in feets" {...field} type="number" min={1}
-                    onKeyDown={(e) => {
-                      if (['e', 'E', '+', '-'].includes(e.key)) {
-                        e.preventDefault();
-                        
-                      }
-                    }}required />
-                </FormControl>
+                <FormLabel>Quality</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value as string}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select quality" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {/* <SelectItem value="economy">Economy</SelectItem> */}
+                    <SelectItem value="standard">Standard</SelectItem>
+                    {/* <SelectItem value="premium">Premium</SelectItem> */}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -326,27 +351,29 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
 
           <FormField
             control={form.control}
-            name="overall_width"
+            name="floors"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Overall Width (e.g., 15 )</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="in feets"
-                    {...field}
-                    type="number"
-                    min={1}
-                    onKeyDown={(e) => {
-                      if (['e', 'E', '+', '-'].includes(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}required
-                  />
-                </FormControl>
+                <FormLabel>Number of Floors</FormLabel>
+                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select number of floors" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {[1].map((num) => (
+                      <SelectItem key={num} value={String(num)}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
+
 
           <FormField
             control={form.control}
@@ -355,8 +382,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
               <FormItem>
                 <FormLabel>Number of Bedrooms</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     min={1}
                     placeholder="Enter number of bedrooms"
                     {...field}
@@ -395,8 +422,8 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
               <FormItem>
                 <FormLabel>Number of Bathrooms</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     min={1}
                     placeholder="Enter number of bathrooms"
                     {...field}
@@ -506,30 +533,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="floors"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Number of Floors</FormLabel>
-                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select number of floors" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {[1].map((num) => (
-                      <SelectItem key={num} value={String(num)}>
-                        {num}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
 
           <FormField
             control={form.control}
