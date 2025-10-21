@@ -55,7 +55,7 @@ const formSchema = z.object({
     .number()
     .min(1, { message: "Floors must be at least 1." })
     .max(3, { message: "Floors cannot exceed 3." }),
-  style: z.string().default("Pakistai style"),
+  style: z.string().default("Pakistani style"),
 });
 
 interface EstimateResponse {
@@ -112,7 +112,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
     defaultValues: {
       area_value: 5,
       unit: "marla",
-      marla_standard: "225 (Govt)",
+      marla_standard: "272.25 (Lahore/old)",
       quality: "standard",
       city: "Faisalabad",
       overall_length: "45.0",
@@ -124,7 +124,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       drawing_dining: "Required",
       garage: "Required",
       floors: 1,
-      style: "Pakistai style",
+      style: "Pakistani style",
     },
   });
 
@@ -263,10 +263,11 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
                         // Apply 3 marla default dimensions based on current marla standard
                         const currentMarlaStandard = form.getValues("marla_standard");
                         const defaultDimensions = {
-                          "225 (Govt)": { width: "18", length: "37" },
                           "272.25 (Lahore/old)": { width: "20", length: "40.8" },
+                          "225 (Govt)": { width: "18", length: "37" },
+                          
                         };
-                        const preset = defaultDimensions[currentMarlaStandard] || defaultDimensions["225 (Govt)"];
+                        const preset = defaultDimensions[currentMarlaStandard] || defaultDimensions["272.25 (Lahore/old)"];
                         form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
                         form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
                       }
