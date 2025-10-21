@@ -2,10 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import Image from "next/image";
-import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { downloadImage } from "@/lib/download-image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs components
 
 type Design = {
@@ -55,7 +51,9 @@ type EstimateResultsProps = {
 };
 
 export function EstimateResults({ data }: EstimateResultsProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { cost, materials, plan, designs } = data.result;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { image1, image2 } = data; // Destructure new image fields
 
   const formatCurrency = (value: number) => {
