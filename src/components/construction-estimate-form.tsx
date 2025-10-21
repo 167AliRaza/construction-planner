@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, type FieldValues, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -57,9 +58,49 @@ const formSchema = z.object({
   style: z.string().default("Pakistai style"),
 });
 
-type EstimateFormProps = {
-  onEstimate: (data: any) => void;
-};
+interface EstimateResponse {
+  result: {
+    cost: {
+      covered_sqft: number;
+      grey_cost: number;
+      finishing_cost: number;
+      total_cost: number;
+      city_factor: number;
+    };
+    materials: {
+      "Bricks (units)": number;
+      "Cement (50kg bags)": number;
+      "Steel (kg)": number;
+      "Sand (cft)": number;
+      "Crush (cft)": number;
+      "Electrical wiring (m)": number;
+      "Plumbing PVC (m)": number;
+      "Paint (sqft)": number;
+      "Materials Cost (PKR)": number;
+    };
+    plan: {
+      Bedrooms: string;
+      "Lounge / Living": number;
+      Kitchen: number;
+      "Bathrooms (combined)": number;
+      "Circulation / Stairs": number;
+      "Store / Laundry": number;
+      "Wardrobes / Built-ins": number;
+    };
+    designs: {
+      name: string;
+      summary: string;
+      best_for: string;
+      note: string;
+    }[];
+  };
+  image1?: string;
+  image2?: string;
+}
+
+interface EstimateFormProps {
+  onEstimate: (data: EstimateResponse) => void;
+}
 
 export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -116,10 +157,11 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       }
 
       const data = await response.json();
-      onEstimate(data);
+      onEstimate(data as EstimateResponse);
       toast.success("Estimate generated successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred.");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+      toast.error(errorMessage);
       console.error("API Error:", error);
     } finally {
       setIsLoading(false);
@@ -247,17 +289,15 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Unit</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value as string}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select unit" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="marla">Marla</SelectItem>
-                    {/* <SelectItem value="sqft">Sqft</SelectItem> */}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  {/* Slot expects a single child — wrap hidden and visible inputs in a div so Slot clones a single element */}
+                  <div>
+                    {/* Keep the field value in a hidden input so the form still submits the expected value ("marla") */}
+                    <input type="hidden" {...field} />
+                    {/* Visible read-only input showing the fixed, user-facing value */}
+                    <Input value={"Marla"} readOnly />
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -269,50 +309,60 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Marla Standard</FormLabel>
-                <Select onValueChange={(value) => {
-                  field.onChange(value);
-                  
-                  // Update dimensions when marla standard changes
-                  const currentArea = form.getValues("area_value");
-                  const marlaDimensions: Record<string, Record<number, { width: string; length: string }>> = {
-                    "225 (Govt)": {
-                      3: { width: "18", length: "37" },
-                      4: { width: "25", length: "36" },
-                      5: { width: "25", length: "45" },
-                      6: { width: "30", length: "45" },
-                      7: { width: "35", length: "45" },
-                      8: { width: "30", length: "60" },
-                      9: { width: "35", length: "58" },
-                      10: { width: "35", length: "65" },
-                    },
-                    "272.25 (Lahore/old)": {
-                      3: { width: "20", length: "40.8" },
-                      4: { width: "25", length: "43.6" },
-                      5: { width: "25", length: "54.5" },
-                      6: { width: "30", length: "54.5" },
-                      7: { width: "30", length: "63.5" },
-                      8: { width: "35", length: "62.2" },
-                      9: { width: "35", length: "70" },
-                      10: { width: "35", length: "77.8" },
-                    },
-                  };
-                  
-                  if (Number.isInteger(currentArea) && marlaDimensions[value]?.[currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
-                    const preset = marlaDimensions[value][currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
-                    form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
-                    form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
-                  }
-                }} value={field.value as string}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select marla standard" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="225 (Govt)">225 (Govt)</SelectItem>
-                    <SelectItem value="272.25 (Lahore/old)">272.25 (Lahore/old)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  {/* Use radio buttons for marla standard options. Wrap the radio group in a div so Slot receives a single child. */}
+                  <div>
+                    <input type="hidden" {...field} />
+                    <RadioGroup
+                      value={field.value as string}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+
+                        // Update dimensions when marla standard changes
+                        const currentArea = form.getValues("area_value");
+                        const marlaDimensions: Record<string, Record<number, { width: string; length: string }>> = {
+                          "225 (Govt)": {
+                            3: { width: "18", length: "37" },
+                            4: { width: "25", length: "36" },
+                            5: { width: "25", length: "45" },
+                            6: { width: "30", length: "45" },
+                            7: { width: "35", length: "45" },
+                            8: { width: "30", length: "60" },
+                            9: { width: "35", length: "58" },
+                            10: { width: "35", length: "65" },
+                          },
+                          "272.25 (Lahore/old)": {
+                            3: { width: "20", length: "40.8" },
+                            4: { width: "25", length: "43.6" },
+                            5: { width: "25", length: "54.5" },
+                            6: { width: "30", length: "54.5" },
+                            7: { width: "30", length: "63.5" },
+                            8: { width: "35", length: "62.2" },
+                            9: { width: "35", length: "70" },
+                            10: { width: "35", length: "77.8" },
+                          },
+                        };
+
+                        if (Number.isInteger(currentArea) && marlaDimensions[value]?.[currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10]) {
+                          const preset = marlaDimensions[value][currentArea as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10];
+                          form.setValue("overall_width", preset.width, { shouldDirty: true, shouldValidate: true });
+                          form.setValue("overall_length", preset.length, { shouldDirty: true, shouldValidate: true });
+                        }
+                      }}
+                      aria-label="Marla Standard"
+                      className="flex gap-4 items-center"
+                    >
+                      <label className="flex items-center gap-2">
+                        <RadioGroupItem value="225 (Govt)" />
+                        <span>225 (Govt)</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <RadioGroupItem value="272.25 (Lahore/old)" />
+                        <span>272.25 (Lahore/old)</span>
+                      </label>
+                    </RadioGroup>
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -396,18 +446,14 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quality</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value as string}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select quality" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {/* <SelectItem value="economy">Economy</SelectItem> */}
-                    <SelectItem value="standard">Standard</SelectItem>
-                    {/* <SelectItem value="premium">Premium</SelectItem> */}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <div>
+                    {/* Keep the field value in a hidden input so the form still submits the expected value ("standard") */}
+                    <input type="hidden" {...field} />
+                    {/* Visible read-only input showing the fixed, user-facing value */}
+                    <Input value={"Standard"} readOnly />
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -419,20 +465,14 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Number of Floors</FormLabel>
-                <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select number of floors" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {[1].map((num) => (
-                      <SelectItem key={num} value={String(num)}>
-                        {num}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <div>
+                    {/* Keep the numeric field value in a hidden input so the form still submits the expected value (1) */}
+                    <input type="hidden" {...field} />
+                    {/* Visible read-only input showing the fixed number of floors */}
+                    <Input value={String(1)} readOnly />
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
