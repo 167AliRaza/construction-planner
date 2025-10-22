@@ -115,7 +115,7 @@ export function ConstructionEstimateForm({ onEstimate }: EstimateFormProps) {
       marla_standard: "272.25 (Lahore/old)",
       quality: "standard",
       city: "Faisalabad",
-      overall_length: "45.0",
+      overall_length: "54.5",
       overall_width: "25.0",
       bedrooms: 2,
       bathrooms: 2,
